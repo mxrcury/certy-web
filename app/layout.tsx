@@ -21,11 +21,9 @@ const RootLayout = ({ children }: LayoutProps) => {
           inter.variable
         )}
       >
-        <main className="min-h-screen max-h-screen">
-          <div>
-            {children}
-            <P>All Rights Reserved. © Certy</P>
-          </div>
+        <main className="min-h-screen">
+          <div className="min-h-[calc(100vh_-_55px)]">{children}</div>
+          <P className="text-center">All Rights Reserved. © Certy</P>
         </main>
       </body>
     </html>
