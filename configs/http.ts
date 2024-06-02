@@ -1,5 +1,7 @@
 import ky from 'ky'
 
+console.log()
+
 export const http = ky.create({
   prefixUrl: process.env.SERVER_URL,
 })

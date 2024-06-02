@@ -20,11 +20,11 @@ import { toast } from '@/components/ui/use-toast'
 import { routes } from '@/constants/routes'
 import { useSignUpStepper } from '@/providers/sign-up-stepper'
 
-import { SignUpSteps } from '@/types/sign-up'
 import { signUpFirstStepSchema } from '@/validations/sign-up'
 import { defaultValuesGeneralInfoStep } from '@/constants/sign-up-stepper'
 import { sendVerificationCode } from '@/services/auth'
 import { parseError } from '@/utils/parse-error'
+import { SignUpSteps } from '@/types/sign-up'
 
 export const GeneralInfoStep = (): JSX.Element => {
   const { setCurrentStep, setValue } = useSignUpStepper()
@@ -37,6 +37,10 @@ export const GeneralInfoStep = (): JSX.Element => {
   const onNextStep = async (data: z.infer<typeof signUpFirstStepSchema>) => {
     try {
       await sendVerificationCode(data.email)
+      
+      setCurrentStep(SignUpSteps.CodeVerification)
+      setValue('email', data.email)
+      setValue('password', data.password)
     } catch (error) {
       const errorMsg = parseError(error)
 
@@ -45,10 +49,6 @@ export const GeneralInfoStep = (): JSX.Element => {
         variant: 'destructive'
       })
     }
-
-    setCurrentStep(SignUpSteps.CodeVerification)
-    setValue('email', data.email)
-    setValue('password', data.password)
   }
 
   return (
