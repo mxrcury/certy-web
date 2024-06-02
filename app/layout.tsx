@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import { P } from "@/components/ui/typography";
+import { Toaster } from "@/components/ui/toaster";
 
 import { LayoutProps } from "@/types";
 import { cn } from "@/lib/utils";
@@ -22,6 +23,7 @@ const RootLayout = ({ children }: LayoutProps) => {
         )}
       >
         <main className="min-h-screen">
+          <Toaster />
           <div className="min-h-[calc(100vh_-_55px)]">{children}</div>
           <P className="text-center">All Rights Reserved. © Certy</P>
         </main>
