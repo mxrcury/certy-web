@@ -1,24 +1,68 @@
 'use client'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 
-import { ChangeEvent, useState } from "react"
-
-import { Input } from "@/components/ui/input"
+import { Input } from '@/components/ui/input'
+import { focusPrevInput } from '@/utils/focus-prev-input'
+import { focusNextInput } from '@/utils/focus-next-input'
 
 interface IOneCharInputProps {
-    onHandleValue: (val: string) => void
+  onHandleValue: (val: string) => void
+  onHandleRef: (ref: React.MutableRefObject<HTMLInputElement | null>) => void
+  defaultValue: string
+  disabled: boolean
+  index: number
 }
 
-export const OneCharInput = ({ onHandleValue  }: IOneCharInputProps): JSX.Element => {
-    const [val, setVal] = useState<string>()
+export const OneCharInput = ({
+  onHandleValue,
+  onHandleRef,
+  disabled,
+  defaultValue,
+  index
+}: IOneCharInputProps): JSX.Element => {
+  const [val, setVal] = useState<string>(defaultValue)
 
-    const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const isAlreadyEnteredVal = val?.length === 1 && e.target.value.length > 1
+  const ref = useRef<HTMLInputElement | null>(null)
 
-        if(isAlreadyEnteredVal) return
-    
-        setVal(e.target.value)
-        onHandleValue(e.target.value)
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setVal(e.target.value[0] || '')
+    onHandleValue(e.target.value[0] || '')
+  }
+
+  useEffect(() => {
+    setVal(defaultValue)
+  }, [defaultValue])
+
+  useEffect(() => {
+    if(ref.current) {
+      onHandleRef(ref)
     }
+  }, [onHandleRef])
 
-    return <Input onChange={onChange} value={val} className="w-[45px] h-[43px] text-center"  max={1} min={1}/>
+  return (
+    <Input
+      name={'input-' + String(index)}
+      onChange={onChange}
+      value={val}
+      ref={ref}
+      className="w-[45px] h-[43px] text-center"
+      disabled={disabled}
+      onKeyDown={(e) => {
+        if (e.key == 'ArrowLeft') {
+          focusPrevInput(index)
+        }
+        
+        if(e.key == 'ArrowRight' && e.currentTarget.value == '') {
+          focusNextInput(index)
+        }
+        
+        const isNotEmptyValueWithCursorBeforeText =
+          e.currentTarget.selectionEnd !== 0
+
+        if (e.key == 'ArrowRight' && isNotEmptyValueWithCursorBeforeText) {
+          focusNextInput(index)
+        }
+      }}
+    />
+  )
 }

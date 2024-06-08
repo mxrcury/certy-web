@@ -3,3 +3,11 @@ export enum SignUpSteps {
     CodeVerification,
     NameInfo
 }
+
+export type SignUpPayload = {
+    email: string
+    password: string
+    username: string
+    firstName: string
+    lastName?: string
+}

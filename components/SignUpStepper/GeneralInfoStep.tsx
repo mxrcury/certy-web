@@ -15,16 +15,17 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { P } from '@/components/ui/typography'
-import { toast } from '@/components/ui/use-toast'
 
-import { routes } from '@/constants/routes'
 import { useSignUpStepper } from '@/providers/sign-up-stepper'
+import { sendVerificationCode } from '@/services/auth'
 
 import { signUpFirstStepSchema } from '@/validations/sign-up'
-import { defaultValuesGeneralInfoStep } from '@/constants/sign-up-stepper'
-import { sendVerificationCode } from '@/services/auth'
-import { parseError } from '@/utils/parse-error'
 import { SignUpSteps } from '@/types/sign-up'
+import { computeRequest } from '@/utils/compute-request'
+
+import { routes } from '@/constants/routes'
+import { SEND_CODE_AGAIN_MSG } from '@/constants/errors'
+import { defaultValuesGeneralInfoStep } from '@/constants/sign-up-stepper'
 
 export const GeneralInfoStep = (): JSX.Element => {
   const { setCurrentStep, setValue } = useSignUpStepper()
@@ -34,22 +35,15 @@ export const GeneralInfoStep = (): JSX.Element => {
     defaultValues: defaultValuesGeneralInfoStep
   })
 
-  const onNextStep = async (data: z.infer<typeof signUpFirstStepSchema>) => {
-    try {
+  const onNextStep = async (data: z.infer<typeof signUpFirstStepSchema>) =>
+    computeRequest(async () => {
       await sendVerificationCode(data.email)
-      
+
       setCurrentStep(SignUpSteps.CodeVerification)
       setValue('email', data.email)
       setValue('password', data.password)
-    } catch (error) {
-      const errorMsg = parseError(error)
+    }, SEND_CODE_AGAIN_MSG)
 
-      toast({
-        title: errorMsg || 'Verification code was not send',
-        variant: 'destructive'
-      })
-    }
-  }
 
   return (
     <>

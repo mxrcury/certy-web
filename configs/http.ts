@@ -1,13 +1,11 @@
 import ky from 'ky'
 
-console.log()
-
 export const http = ky.create({
-  prefixUrl: process.env.SERVER_URL,
+  prefixUrl: process.env.NEXT_PUBLIC_SERVER_URL,
 })
 
 export const httpAuthorized = ky.create({
-  prefixUrl: process.env.SERVER_URL,
+  prefixUrl: process.env.NEXT_PUBLIC_SERVER_URL,
   hooks: {
     beforeRequest: [
       (request) =>
