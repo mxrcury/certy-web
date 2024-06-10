@@ -72,8 +72,11 @@ export const CodeVerificationInputs = ({
           .filter((v) => v.trim() !== '')
           .forEach((v, i) => (prevValues[i] = v))
 
+        setValue('code', prevValues.join(''))
+
         return prevValues
       })
+
 
       if (clipboardText?.length == inputsQty) {
         setDisabledButton(false)
@@ -84,6 +87,8 @@ export const CodeVerificationInputs = ({
       document.removeEventListener("paste", (_) => {})
     }
   }, [])
+
+  console.log(codeValues);
 
   useEffect(() => {
     setCodeValues(genInitialCodeValues())

@@ -17,33 +17,49 @@ import { Input } from '@/components/ui/input'
 import { P } from '@/components/ui/typography'
 
 import { useSignUpStepper } from '@/providers/sign-up-stepper'
-import { sendVerificationCode } from '@/services/auth'
+import { authService } from '@/services/auth'
 
 import { signUpFirstStepSchema } from '@/validations/sign-up'
 import { SignUpSteps } from '@/types/sign-up'
-import { computeRequest } from '@/utils/compute-request'
 
 import { routes } from '@/constants/routes'
-import { SEND_CODE_AGAIN_MSG } from '@/constants/errors'
 import { defaultValuesGeneralInfoStep } from '@/constants/sign-up-stepper'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from '../ui/use-toast'
 
 export const GeneralInfoStep = (): JSX.Element => {
   const { setCurrentStep, setValue } = useSignUpStepper()
+
+  const { mutate: sendVerificationCode } = useMutation({
+    mutationFn: (email: string) => {
+      return authService.sendVerificationCode(email)
+    }
+  })
 
   const form = useForm<z.infer<typeof signUpFirstStepSchema>>({
     resolver: zodResolver(signUpFirstStepSchema),
     defaultValues: defaultValuesGeneralInfoStep
   })
 
-  const onNextStep = async (data: z.infer<typeof signUpFirstStepSchema>) =>
-    computeRequest(async () => {
-      await sendVerificationCode(data.email)
-
+  const onSuccess =
+    (email: string, password: string) => () => {
       setCurrentStep(SignUpSteps.CodeVerification)
-      setValue('email', data.email)
-      setValue('password', data.password)
-    }, SEND_CODE_AGAIN_MSG)
+      setValue('email', email)
+      setValue('password', password)
+    }
+  const onError = (e: Error) => {
+    toast({
+      title: e.message,
+      variant: 'destructive'
+    })
+  }
 
+  const onNextStep = async (data: z.infer<typeof signUpFirstStepSchema>) => {
+    sendVerificationCode(data.email, {
+      onSuccess: onSuccess(data.email, data.password),
+      onError,
+    })
+  }
 
   return (
     <>

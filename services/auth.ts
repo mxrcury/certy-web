@@ -1,7 +1,7 @@
 import { http } from '@/configs/http'
 import { SignUpPayload } from '@/types/sign-up'
 
-const service = {
+const authService = {
   sendVerificationCode: (email: string) => {
     return http.get(`auth/send-code`, { searchParams: { email } })
   },
@@ -15,4 +15,4 @@ const service = {
   }
 }
 
-export const { sendVerificationCode, verifyCode, signUp } = service
+export { authService }

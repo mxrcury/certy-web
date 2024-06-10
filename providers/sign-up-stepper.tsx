@@ -21,7 +21,7 @@ interface InitialFormValues {
 }
 
 const initialValues = {
-  currentStep: SignUpSteps.NameInfo,
+  currentStep: SignUpSteps.GeneralInfo,
   values: {
     email: '',
     password: '',

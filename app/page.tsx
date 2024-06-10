@@ -1,12 +1,13 @@
-import Img from "next/image";
+import Img from 'next/image'
+import Link from 'next/link'
 
-import { Logo } from "@/components/Logo/Logo";
-import { H1 } from "@/components/ui/typography";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { routes } from "@/constants/routes";
+import { Logo } from '@/components/Logo'
+import { H1 } from '@/components/ui/typography'
+import { Button } from '@/components/ui/button'
 
-export default function Home() {
+import { routes } from '@/constants/routes'
+
+export default function RootPage() {
   return (
     <div className="flex items-center justify-center w-[100vw] h-[calc(100vh_-_55px)]">
       <div className="flex-1 max-w-[574px]">
@@ -28,5 +29,5 @@ export default function Home() {
         </div>
       </div>
     </div>
-  );
+  )
 }
